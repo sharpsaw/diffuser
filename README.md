@@ -9,10 +9,12 @@ Use
 *Fictional BDUF - Not implemented yet. But I won't sleep until it is, so you
 probably aren't ever going to read this message*
 
-All project-specific configuration will live in `.diffuser/`, the backend side
-of its more presentable sibling: `diffuser/`.
+- `.diffuser/` - contains all project-specific configuration in this
+  "backend" directory. Most important is the `Rakefile`, whose `default` task
+  is run to capture the output, and also the `green/` dir, where the output is
+  actually captured.
 
-Once you have it set up, you can (in a Rakefile/Makefile/shell/cronjob/etc) run:
+The "frontend" to the process is commands like:
 
 - `diffuser/test` - will invoke the default task for `.diffuser/Rakefile`, and
   record each sub-tasks's output as its own file in
@@ -24,9 +26,24 @@ Once you have it set up, you can (in a Rakefile/Makefile/shell/cronjob/etc) run:
 Initial Setup
 -------------
 
-Install as a submodule of your repository, then `git add` a
-`.diffuser/Rakefile` that contains however many subtasks you want to represent
-your test.
+From your project, do:
+
+    git submodule add git://github.com/sharpsaw/diffuser.git
+    diffuser/first-time
+
+...this will:
+
+1. Git-commit the addition of the submodule
+2. Initialize/update the submodule directory (it starts out empty)
+3. Add the test-case-containing [Rakefile](http://rake.rubyforge.org/)
+4. Open an `$EDITOR` on the `.diffuser/Rakefile`
+5. `git add .diffuser`
+6. ...leaving the remainder to you, once you see if it's working or not.
+
+Remember that each `rake` task will be parsed into its own file in
+`.diffuser/green/$DIFFUSER/\*`. How you use this is up to your tastes -
+sometimes all-in-one-big-file is nice, but other times you'll want to break it
+up into more atomic bits.
 
 Support
 -------
