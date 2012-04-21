@@ -1,0 +1,4 @@
+= diffuser initialized! =
+
+...now run `diffuser/test` for the first time. If you like the results, then
+follow up with `diffuser/save`.
