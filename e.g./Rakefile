@@ -1,0 +1,24 @@
+#!/usr/bin/env rake
+# This is only an example. Could be any Rakefile with a working `default` task.
+
+EXE='../myprogram' # Relative to the .diffuser/ dir.
+File.executable? EXE or raise "EXE is `#{EXE}` ...but isn't an executable."
+
+def exe_task args
+    cmd = [EXE] + args
+    str = cmd.join ' '
+    desc "Run #{str}"
+    task str.to_sym do
+        sh *cmd
+    end
+end
+
+def red str
+    "\e[31m#{str}\e[0m"
+end
+
+# Again, this is only a quick example to get you up and going quickly. There
+# would be nothing wrong with defining the subtasks explicitly (or even
+# omitting some, dynamically, depending on the conditions of the environment).
+exe_task %w(--help)
+task :default => Rake::Task.tasks
