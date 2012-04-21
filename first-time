@@ -1,0 +1,45 @@
+#!/bin/sh -xe
+git commit -m 'Add submodule: git://github.com/sharpsaw/diffuser.git' diffuser
+git submodule update --init diffuser
+
+if [ -e .diffuser ]; then
+    echo '`.diffuser` already exists. Not messing with it.'
+else
+    mkdir -p .diffuser/green
+    cp diffuser/e.g./Rakefile .diffuser
+    ${VISUAL:-${EDITOR:-vim}} .diffuser/Rakefile
+fi
+
+ctrl_c_prompt() {
+    echo $1
+    echo -n "(Enter for Yes, Ctrl+c for No)"
+    trap "echo OK, skipping.; goodbye" INT
+    read
+}
+
+should_have_by_now() {
+    type $1 >&- || (
+        echo "Uh-oh. Still don't have $1 for some reason. Quitting."
+        exit 1
+    )
+}
+
+goodbye() {
+    cat diffuser/.post-first-time-instructions
+    exit 0
+}
+
+type ruby >&- || (
+    ctrl_c_prompt "It seems you don't have ruby installed. Use rvm to fix this?"
+    curl -L get.rvm.io | bash -s stable --gems=rake
+    source ~/.rvm/scripts/rvm
+    should_have_by_now ruby
+)
+
+type rake >&- || (
+    ctrl_c_prompt "It seems you don't have rake installed. gem install rake?" 
+    gem install rake
+    should_have_by_now rake
+)
+
+goodbye
